@@ -16,7 +16,7 @@ end
 f_q = f_n';
 
 sdof_response = sdof_PSD_response(spectrum, f_n, 10, f_q);
-grms_values = grms(sdof_response, f_n);
+grms_values = grms(sdof_response, f_q);
 
 if nargout == 0
     loglog(f_n, grms_values)
