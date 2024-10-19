@@ -31,12 +31,14 @@ switch nargin
 end
 
 segmentareas = zeros(size(n));
-for i = 1:width(n)
-    if n(i) == -1
-        segmentareas(:,i) = y(:,i).*f(:,i).*log(f(:,i+1)./f(:,i));
-    else
-        segmentareas(:,i) = y(:,i)./(f(:,i).^n(:,i)).*(1./(n(:,i)+1)).*(f(:,i+1).^(n(:,i)+1) - f(:,i).^(n(:,i)+1));
-    end
-end
+
+f = f.*ones(size(y));
+n_neg_one_mask = n == -1;
+n_not_neg_one_mask = ~n_neg_one_mask;
+
+segmentareas(n_neg_one_mask) = y(n_neg_one_mask).*f(n_neg_one_mask).*log(f([false(height(n), 1), n_neg_one_mask])./f(n_neg_one_mask));
+segmentareas(n_not_neg_one_mask) = y(n_not_neg_one_mask)./(f(n_not_neg_one_mask).^n(n_not_neg_one_mask)).*(1./(n(n_not_neg_one_mask)+1)).*...
+                                (f([false(height(n), 1), n_not_neg_one_mask]).^(n(n_not_neg_one_mask)+1) - f(n_not_neg_one_mask).^(n(n_not_neg_one_mask)+1));
+
 
 area = sum(segmentareas, 2);
