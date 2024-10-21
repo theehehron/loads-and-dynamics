@@ -13,6 +13,6 @@ You can also calculate/plot the vibration response spectrum for a base vibration
 
 ![vrs python](python/vrs_python.png)
 
-The "equivalent" shock response spectrum to a random vibration test can be calulated given the random vibration PSD and a test duration. The "equivalent" SRS is assumed to be equal to the n$\sigma$ vibration response spectrum, where $n = \sqrt{2\ln{(f_nT)}}$ where $f_n$ is the natural frequency and $T$ is the test duration. The plot below shows the equivalent SRS for MIL-STD-1540C ATP with test duration of 180 seconds.
+The "equivalent" shock response spectrum to a random vibration test can be calulated given the random vibration PSD and a test duration. The "equivalent" SRS is assumed to be equal to the $n\sigma$ vibration response spectrum, where $n = \sqrt{2\ln{(f_nT)}}$ where $f_n$ is the natural frequency and $T$ is the test duration. The plot below shows the equivalent SRS for MIL-STD-1540C ATP with test duration of 180 seconds.
 
 ![vrs srs equivalence](python/vrs_nsigma_python.png)
