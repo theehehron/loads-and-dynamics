@@ -62,7 +62,6 @@ def grms(*args):
 
 
 def findnearest_above(x_q, x):
-
     indices = np.searchsorted(x, x_q, side='right')
     indices = np.clip(indices, 0, len(x) - 1)
     
@@ -71,7 +70,6 @@ def findnearest_above(x_q, x):
 
 
 def findnearest_below(x_q, x):
-
     indices = np.searchsorted(x, x_q, side='left')-1
     indices = np.clip(indices, 0, len(x) - 1)
     
@@ -125,10 +123,37 @@ def vrs(*args):
     else:
         raise ValueError("vrs takes one or two input arguments.")
         
-    f_q = f_n.T
+    f_q = f_n.T 
     
     sdof_response = sdof_psd_response(spectrum, f_n, 10, f_q)
     vrs = grms(sdof_response, f_q);
     return vrs, f_q
     
     
+    
+def vrs_srs_equivalent(*args):
+    spectrum = args[0]
+    if len(args) == 1:
+        f_n = np.logspace(np.log10(min(spectrum[:,0])), np.log10(max(spectrum[:,0])), 500)
+        f_n[-1] = spectrum[-1, 0] # set last element to equal largest element in spectrum
+        T = 60
+    elif len(args) == 2:
+        T = args[1]
+        f_n = np.logspace(np.log10(min(spectrum[:,0])), np.log10(max(spectrum[:,0])), 500)
+        f_n[-1] = spectrum[-1, 0] # set last element to equal largest element in spectrum
+    elif len(args) == 3:
+        T = args[1]
+        f_n = args[2]
+    else:
+        raise ValueError("vrs_srs_equivalent takes one, two, or three input arguments.")
+        
+    f_q = f_n.T 
+    
+    nsigma = np.sqrt(2*np.log(f_n*T))
+    sdof_response = sdof_psd_response(spectrum, f_n, 10, f_q)
+    vrs = grms(sdof_response, f_q);
+    vrs_nsigma = vrs*nsigma
+    return vrs_nsigma, f_q
+        
+        
+        

@@ -8,9 +8,11 @@ acceptance_level = np.array([[  20, 0.0053],
                             [2000, 0.0036]])
 
 
+
 freq_q = np.linspace(20, 2000, 1000)
 sdof_response = dy.sdof_psd_response(acceptance_level, np.array([100, 200, 300]), 10, freq_q)
 vrs, f_vrs = dy.vrs(acceptance_level)
+vrs_nsigma, f_vrs_nsigma = dy.vrs_srs_equivalent(acceptance_level, 180)
 
 
 fig, ax = plt.subplots()
@@ -34,3 +36,13 @@ plt.xlabel("Natural Frequency (Hz)")
 plt.ylabel("Acceleration (GRMS)")
 plt.title('Vibration Response Spectrum\nSDOF systems Q=10   Base Input: MIL-STD-1540C ATP')
 plt.savefig("vrs_python.png", dpi=300)
+
+
+fig, ax3 = plt.subplots()
+plt.loglog(f_vrs_nsigma, vrs_nsigma)
+ax3.grid()
+ax3.grid(which='minor', linestyle=':', linewidth='0.5', color='gray') 
+plt.xlabel("Natural Frequency (Hz)")
+plt.ylabel(r"Acceleration (n$\sigma$G)")
+plt.title('Vibration Response Spectrum, Q=10, $n = \sqrt{2\ln{(f_nT)}}$\nMIL-STD-1540C ATP 180 sec/axis, SRS Equivalence')
+plt.savefig("vrs_nsigma_python.png", dpi=300)
