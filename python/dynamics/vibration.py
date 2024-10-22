@@ -81,6 +81,7 @@ def spectrum_points(spectrum, freq_query):
     ## This works but is failing at endpoints. Need to fix.
     spectrum_freqs = spectrum[:,0]
     spectrum_accel = spectrum[:,1]
+    freq_query = np.clip(freq_query, min(spectrum_freqs), max(spectrum_freqs))
     nearest_freq_above = spectrum_freqs[findnearest_above(freq_query, spectrum_freqs)]
     nearest_freq_below = spectrum_freqs[findnearest_below(freq_query, spectrum_freqs)]
     nearest_accel_above = spectrum_accel[findnearest_above(freq_query, spectrum_freqs)]
@@ -88,7 +89,7 @@ def spectrum_points(spectrum, freq_query):
     
     slopes = np.log10(nearest_accel_above/nearest_accel_below)/np.log10(nearest_freq_above/nearest_freq_below)
     spectrum_points = nearest_accel_below/np.power(nearest_freq_below, slopes)*np.power(freq_query, slopes)
-    return spectrum_points
+    return spectrum_points, freq_query
     
 
 
