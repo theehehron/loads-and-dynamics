@@ -34,19 +34,22 @@ time = np.arange(N)/fs
 # 2. Compute the fft of the white noise time history.
 white_fft = fft.fft(white_noise_filtered)
 fft_freqs = fft.fftfreq(N, 1/fs)
-PSD_target, PSD_target_freqs = vibe.spectrum_points(acceptance_level, np.abs(fft_freqs))
 
 
-# 3. scale the white noise signal in the frequency domain to match the target PSD
+# 3. Calculate the target psd values that the white noise needs to be scaled to.
+PSD_target = vibe.spectrum_points(acceptance_level, np.abs(fft_freqs))
+
+
+# 4. scale the white noise signal in the frequency domain to match the target PSD
 scale_fft = np.sqrt(PSD_target*fs/(2*np.power(std_dev, 2)))
 synth_fft = scale_fft*white_fft
 
 
-# 4. Compute the inverse fft to get the time history
+# 5. Compute the inverse fft to get the time history
 synth_time_history = np.real(fft.ifft(synth_fft))
 
 
-# 5. Time history analysis: evaluate the PSD, kurtosis, & histogram
+# 6. Time history analysis: evaluate the PSD, kurtosis, & histogram
 f_synth, psd_synth = signal.welch(synth_time_history, fs)
 kurtosis = np.sum(np.power(synth_time_history-np.mean(synth_time_history), 4))/(synth_time_history.shape[0]*np.power(np.std(synth_time_history), 4))
 

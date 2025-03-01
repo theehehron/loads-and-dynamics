@@ -3,16 +3,17 @@ import matplotlib.pyplot as plt
 import dynamics.vibration as dy
 
 acceptance_level = np.array([[  20, 0.0053],
-                            [ 150, 0.04],
-                            [ 600, 0.04],
-                            [2000, 0.0036]])
+                             [ 150, 0.04],
+                             [ 600, 0.04],
+                             [2000, 0.0036]])
 
 
 
 freq_q = np.linspace(20, 2000, 1000)
-sdof_response = dy.sdof_psd_response(acceptance_level, np.array([100, 200, 300]), 10, freq_q)
+sdof_response = dy.sdof_psd_response(base_spectrum=acceptance_level, f_n=np.array([100, 200, 300]), Q=10, f_query=freq_q)
 vrs, f_vrs = dy.vrs(acceptance_level)
-vrs_nsigma, f_vrs_nsigma = dy.vrs_srs_equivalent(acceptance_level, 180)
+vrs_nsigma, f_vrs_nsigma = dy.vrs_shock_equivalent(acceptance_level, 60)
+vrs_miles, f_vrs_miles = dy.vrs_miles(spectrum=acceptance_level, Q=10, duration=60)
 
 
 fig, ax = plt.subplots()
@@ -33,16 +34,18 @@ ax2.set_ylim(1, 20)
 ax2.grid()
 ax2.grid(which='minor', linestyle=':', linewidth='0.5', color='gray') 
 plt.xlabel("Natural Frequency (Hz)")
-plt.ylabel("Acceleration (GRMS)")
+plt.ylabel("Acceleration (gRMS)")
 plt.title('Vibration Response Spectrum\nSDOF systems Q=10   Base Input: MIL-STD-1540C ATP')
 plt.savefig("vrs_python.png", dpi=300)
 
 
 fig, ax3 = plt.subplots()
+plt.loglog(f_vrs_miles, vrs_miles)
 plt.loglog(f_vrs_nsigma, vrs_nsigma)
 ax3.grid()
 ax3.grid(which='minor', linestyle=':', linewidth='0.5', color='gray') 
 plt.xlabel("Natural Frequency (Hz)")
-plt.ylabel(r"Acceleration (n$\sigma$G)")
-plt.title('Vibration Response Spectrum, Q=10, $n = \sqrt{2\ln{(f_nT)}}$\nMIL-STD-1540C ATP 180 sec/axis, SRS Equivalence')
+plt.ylabel(r"Acceleration (g)")
+plt.legend(["VRS, Miles Eq. Approximation", "VRS, shock equivalence"])
+plt.title('Vibration Response Spectrum, Q=10, SRS Equivalence\nMIL-STD-1540C ATP 60 sec duration')
 plt.savefig("vrs_nsigma_python.png", dpi=300)
